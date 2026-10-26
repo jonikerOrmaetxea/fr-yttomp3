@@ -169,7 +169,7 @@
     <div class="card">
         <h2>YouTube to MP3 & Harmony</h2>
         <input type="text" id="urlInput" placeholder="Pega el enlace de YouTube aquí...">
-        <button id="downloadBtn" onclick="startConversion()">Convertir y Analizar</button>
+        <button id="downloadBtn" type="button">Convertir y Analizar</button>
         <div id="status"></div>
         <div id="resultContainer"></div>
     </div>
@@ -177,12 +177,142 @@
     <script>
         const API_URL = "https://yttomp3-hhdd.onrender.com";
 
-        // Diccionario de escalas diatónicas y progresiones habituales para guitarra
         const HARMONY_MAP = {
-            // Tonalidades menores (i - ii° - III - iv - v - VI - VII)
             "Am":  { chords: ["Am", "Bdim", "C", "Dm", "Em", "F", "G"], prog: "Am - F - C - G  (i - VI - III - VII)" },
-            "A#m": { chords: ["A#m", "B#dim", "C#", "D#m", "E#m", "F#", "G#"], prog: "A#m - F# - C# - G# (Cejilla traste 1 como Am)" },
+            "A#m": { chords: ["A#m", "Cdim", "C#", "D#m", "Fm", "F#", "G#"], prog: "A#m - F# - C# - G# (Cejilla traste 1 como Am)" },
             "Bm":  { chords: ["Bm", "C#dim", "D", "Em", "F#m", "G", "A"], prog: "Bm - G - D - A  (i - VI - III - VII)" },
             "Cm":  { chords: ["Cm", "Ddim", "D#", "Fm", "Gm", "G#", "A#"], prog: "Cm - G# - D# - A# (Cejilla traste 3 como Am)" },
             "C#m": { chords: ["C#m", "D#dim", "E", "F#m", "G#m", "A", "B"], prog: "C#m - A - E - B  (i - VI - III - VII)" },
-            "Dm":  { chords: ["Dm", "Edim", "F", "Gm", "Am", "Bb", "C"], prog: "Dm - Bb
+            "Dm":  { chords: ["Dm", "Edim", "F", "Gm", "Am", "Bb", "C"], prog: "Dm - Bb - F - C  (i - VI - III - VII)" },
+            "D#m": { chords: ["D#m", "Fdim", "F#", "G#m", "A#m", "B", "C#"], prog: "D#m - B - F# - C#  (i - VI - III - VII)" },
+            "Em":  { chords: ["Em", "F#dim", "G", "Am", "Bm", "C", "D"], prog: "Em - C - G - D  (i - VI - III - VII)" },
+            "Fm":  { chords: ["Fm", "Gdim", "G#", "A#m", "Cm", "C#", "D#"], prog: "Fm - C# - G# - D#  (i - VI - III - VII)" },
+            "F#m": { chords: ["F#m", "G#dim", "A", "Bm", "C#m", "D", "E"], prog: "F#m - D - A - E  (i - VI - III - VII)" },
+            "Gm":  { chords: ["Gm", "Adim", "Bb", "Cm", "Dm", "Eb", "F"], prog: "Gm - Eb - Bb - F (Cejilla traste 3 como Em)" },
+            "G#m": { chords: ["G#m", "A#dim", "B", "C#m", "D#m", "E", "F#"], prog: "G#m - E - B - F#  (i - VI - III - VII)" },
+            "C":   { chords: ["C", "Dm", "Em", "F", "G", "Am", "Bdim"], prog: "C - G - Am - F  (I - V - vi - IV)" },
+            "C#":  { chords: ["C#", "D#m", "Fm", "F#", "G#", "A#m", "Cdim"], prog: "C# - G# - A#m - F#  (I - V - vi - IV)" },
+            "D":   { chords: ["D", "Em", "F#m", "G", "A", "Bm", "C#dim"], prog: "D - A - Bm - G  (I - V - vi - IV)" },
+            "D#":  { chords: ["D#", "Fm", "Gm", "G#", "A#", "Cm", "Ddim"], prog: "D# - A# - Cm - G# (Cejilla traste 3 como C)" },
+            "E":   { chords: ["E", "F#m", "G#m", "A", "B", "C#m", "D#dim"], prog: "E - B - C#m - A  (I - V - vi - IV)" },
+            "F":   { chords: ["F", "Gm", "Am", "Bb", "C", "Dm", "Edim"], prog: "F - C - Dm - Bb  (I - V - vi - IV)" },
+            "F#":  { chords: ["F#", "G#m", "A#m", "B", "C#", "D#m", "Fdim"], prog: "F# - C# - D#m - B  (I - V - vi - IV)" },
+            "G":   { chords: ["G", "Am", "Bm", "C", "D", "Em", "F#dim"], prog: "G - D - Em - C  (I - V - vi - IV)" },
+            "G#":  { chords: ["G#", "A#m", "Cm", "C#", "D#", "Fm", "Gdim"], prog: "G# - D# - Fm - C#  (I - V - vi - IV)" },
+            "A":   { chords: ["A", "Bm", "C#m", "D", "E", "F#m", "G#dim"], prog: "A - E - F#m - D  (I - V - vi - IV)" },
+            "A#":  { chords: ["A#", "Cm", "Dm", "D#", "F", "Gm", "Adim"], prog: "A# - F - Gm - D#  (I - V - vi - IV)" },
+            "B":   { chords: ["B", "C#m", "D#m", "E", "F#", "G#m", "A#dim"], prog: "B - F# - G#m - E  (I - V - vi - IV)" }
+        };
+
+        function normalizeKeyCode(rawKey) {
+            if (!rawKey) return "Am";
+            const parenMatch = rawKey.match(/\(([^)]+)\)/);
+            if (parenMatch) return parenMatch[1];
+            const parts = rawKey.trim().split(/\s+/);
+            const note = parts[0];
+            const isMinor = rawKey.toLowerCase().includes("menor") || rawKey.toLowerCase().includes("min");
+            return isMinor && !note.endsWith("m") ? `${note}m` : note;
+        }
+
+        async function startConversion() {
+            const urlInput = document.getElementById('urlInput').value.trim();
+            const btn = document.getElementById('downloadBtn');
+            const status = document.getElementById('status');
+            const resultContainer = document.getElementById('resultContainer');
+
+            resultContainer.innerHTML = "";
+
+            if (!urlInput) {
+                status.textContent = "Por favor, introduce una URL de YouTube válida.";
+                status.style.color = "#f87171";
+                return;
+            }
+
+            btn.disabled = true;
+            status.textContent = "Conectando con el servidor...";
+            status.style.color = "#38bdf8";
+
+            try {
+                let data = null;
+
+                for (let intento = 0; intento < 6; intento++) {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 25000);
+
+                    const response = await fetch(`${API_URL}/convert/?id_or_url=${encodeURIComponent(urlInput)}`, {
+                        signal: controller.signal
+                    });
+                    clearTimeout(timeoutId);
+
+                    data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.detail || "Error al conectar con el backend.");
+                    }
+
+                    if (data.status === "processing") {
+                        status.textContent = `Convirtiendo (${data.progress || 0}%)...`;
+                        await new Promise(r => setTimeout(r, 3000));
+                    } else {
+                        break;
+                    }
+                }
+
+                if (data && data.status === "ok" && data.link) {
+                    status.textContent = "¡Conversión y análisis completados!";
+                    status.style.color = "#4ade80";
+
+                    const sizeMB = data.filesize ? (data.filesize / (1024 * 1024)).toFixed(2) + " MB" : "";
+                    const durationMin = data.duration ? Math.floor(data.duration / 60) + ":" + String(Math.floor(data.duration % 60)).padStart(2, '0') + " min" : "";
+
+                    const bpmVal = data.bpm || 120;
+                    const keyVal = data.key || "A menor (Am)";
+                    const keyCode = normalizeKeyCode(keyVal);
+                    const harmonyData = HARMONY_MAP[keyCode] || HARMONY_MAP["Am"];
+
+                    const pills = harmonyData.chords.map((chord, idx) => 
+                        `<span class="chord-pill ${idx === 0 ? 'root' : ''}">${chord}</span>`
+                    ).join("");
+
+                    resultContainer.innerHTML = `
+                        <div class="track-info">
+                            <div class="track-title">${data.title || "Audio MP3"}</div>
+                            <div class="track-meta">${durationMin} ${sizeMB ? "• " + sizeMB : ""}</div>
+                            <div class="badges">
+                                <span class="badge">🥁 ${bpmVal} BPM</span>
+                                <span class="badge key-badge">🎵 Tono: ${keyVal}</span>
+                            </div>
+                            <div class="chords-box">
+                                <div class="chords-label">🎸 Acordes de la escala (${keyCode})</div>
+                                <div class="chords-grid">${pills}</div>
+                                <div class="progression-text">
+                                    <strong>Progresión sugerida:</strong> ${harmonyData.prog}
+                                </div>
+                            </div>
+                            <a href="${data.link}" class="download-link" target="_blank" rel="noopener noreferrer">
+                                Descargar MP3
+                            </a>
+                        </div>
+                    `;
+                } else {
+                    throw new Error((data && data.msg) || "No se pudo obtener el enlace MP3.");
+                }
+
+            } catch (err) {
+                status.textContent = err.name === 'AbortError' 
+                    ? "Tiempo de espera agotado. Render se está despertando, vuelve a pulsar en 10 segundos." 
+                    : `Error: ${err.message}`;
+                status.style.color = "#f87171";
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // Vinculamos el botón y la tecla Enter directamente desde JavaScript
+        document.getElementById('downloadBtn').addEventListener('click', startConversion);
+        document.getElementById('urlInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') startConversion();
+        });
+    </script>
+</body>
+</html>
