@@ -1,107 +1,174 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="light">
+<html lang="es" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Velvet Wood • Audio & Jazz Harmony Studio</title>
+    <title>Velvet Wood • Analog Jazz & Mastering Console</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=JetBrains+Mono:wght@500;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=JetBrains+Mono:wght@500;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Modo Claro: Madera de Arce, Nogal y Latón Cálido */
-            --bg-primary: #f4ebe1;
-            --bg-secondary: #e6d5c3;
-            --wood-card: #fcf8f2;
-            --wood-panel: #f1e6d8;
-            --wood-border: #d3bda5;
-            --wood-Trim: #8c583a;
-            --text-main: #2b1810;
-            --text-muted: #6e5243;
-            --accent-brass: #b86b28;
-            --accent-brass-hover: #9a5419;
+            /* Modo Claro: Luthier & Madera de Arce */
+            --bg-overlay: rgba(242, 230, 216, 0.88);
+            --bg-Overlay-grad: linear-gradient(135deg, rgba(244, 235, 225, 0.92) 0%, rgba(222, 200, 176, 0.86) 100%);
+            --wood-console: rgba(252, 246, 238, 0.94);
+            --wood-panel: #f1e3d3;
+            --wood-inset: #e5d2bc;
+            --wood-border: #c4a482;
+            --wood-trim: #7c482b;
+            --text-main: #26140c;
+            --text-muted: #694b3c;
+            --accent-brass: #b86924;
             --accent-gold: #d9822b;
-            --badge-bg: #efe2d1;
+            --badge-bg: #ead8c3;
             --root-pill-bg: #3d2214;
             --root-pill-text: #f9e8d2;
-            --download-bg: #2e5a36;
-            --download-hover: #234729;
-            --shadow-card: 0 20px 45px rgba(43, 24, 16, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+            --download-bg: #295732;
+            --download-hover: #1e4225;
+            --panel-shadow: 0 18px 40px rgba(38, 20, 12, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.65);
         }
 
         [data-theme="dark"] {
-            /* Modo Oscuro: Club de Jazz Nocturno, Caoba Profunda y Oro */
-            --bg-primary: #140c08;
-            --bg-secondary: #1e120c;
-            --wood-card: #24160f;
-            --wood-panel: #1b100b;
-            --wood-border: #4a2e20;
-            --wood-Trim: #a4633a;
-            --text-main: #f5ebe1;
-            --text-muted: #b59b8a;
-            --accent-brass: #d98a3c;
-            --accent-brass-hover: #e59d54;
-            --accent-gold: #f0a853;
-            --badge-bg: #2f1d14;
-            --root-pill-bg: #d98a3c;
-            --root-pill-text: #180e09;
-            --download-bg: #35693f;
-            --download-hover: #417d4c;
-            --shadow-card: 0 24px 55px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 215, 180, 0.08);
+            /* Modo Oscuro (Predeterminado): Club de Jazz Nocturno, Caoba y Latón */
+            --bg-overlay: rgba(16, 9, 6, 0.84);
+            --bg-Overlay-grad: linear-gradient(135deg, rgba(18, 10, 7, 0.92) 0%, rgba(34, 19, 12, 0.82) 50%, rgba(15, 8, 5, 0.94) 100%);
+            --wood-console: rgba(34, 20, 14, 0.92);
+            --wood-panel: #2b1911;
+            --wood-inset: #160d09;
+            --wood-border: #593726;
+            --wood-trim: #9e5b34;
+            --text-main: #f7ede2;
+            --text-muted: #c2a693;
+            --accent-brass: #df8e3c;
+            --accent-gold: #f5ab56;
+            --badge-bg: #362016;
+            --root-pill-bg: #df8e3c;
+            --root-pill-text: #180d07;
+            --download-bg: #2f683b;
+            --download-hover: #3b7d49;
+            --panel-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 205, 160, 0.12);
         }
 
         * {
             box-sizing: border-box;
-            transition: background-color 0.35s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            transition: background-color 0.3s ease, color 0.25s ease, border-color 0.25s ease;
         }
 
         body {
             font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: var(--bg-primary);
-            background-image: 
-                radial-gradient(circle at 20% 20%, rgba(217, 130, 43, 0.08) 0%, transparent 55%),
-                radial-gradient(circle at 80% 80%, rgba(140, 88, 58, 0.12) 0%, transparent 60%),
-                repeating-linear-gradient(
-                    90deg,
-                    rgba(140, 88, 58, 0.025) 0px,
-                    rgba(140, 88, 58, 0.025) 2px,
-                    transparent 2px,
-                    transparent 8px
-                );
             color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
             margin: 0;
-            padding: 1.5rem;
-            position: relative;
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            /* Imagen de fondo de estudio vintage, instrumentos de madera y vinilos */
+            background-image: 
+                var(--bg-Overlay-grad),
+                url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=2000&q=85');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            overflow-x: hidden;
         }
 
-        /* Botón Luna / Sol arriba a la derecha */
-        .theme-toggle {
-            position: fixed;
-            top: 1.5rem;
-            right: 1.5rem;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: var(--wood-card);
-            border: 1.5px solid var(--wood-border);
+        /* --- BARRA SUPERIOR DE ESTUDIO (FULL WIDTH) --- */
+        .top-navbar {
+            width: 100%;
+            background: var(--wood-console);
+            backdrop-filter: blur(12px);
+            border-bottom: 2px solid var(--wood-border);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.35);
+            padding: 0.9rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 50;
+        }
+
+        .brand-cluster {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .brand-emblem {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--accent-brass), var(--wood-trim));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            box-shadow: inset 0 1px 2px rgba(255,255,255,0.4), 0 4px 10px rgba(0,0,0,0.3);
+            border: 1px solid var(--accent-gold);
+        }
+
+        .brand-titles h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.5rem;
+            margin: 0;
+            letter-spacing: 0.01em;
+            color: var(--text-main);
+        }
+
+        .brand-titles span {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
             color: var(--accent-brass);
+            font-weight: 700;
+            display: block;
+        }
+
+        .nav-telemetry {
+            display: flex;
+            align-items: center;
+            gap: 1.8rem;
+        }
+
+        .vu-box {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: var(--wood-inset);
+            padding: 0.45rem 0.9rem;
+            border-radius: 8px;
+            border: 1px solid var(--wood-border);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #4ade80;
+            box-shadow: 0 0 8px #4ade80;
+        }
+
+        /* Botón Sol / Luna Arriba a la Derecha */
+        .theme-toggle {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--wood-panel);
+            border: 1.5px solid var(--wood-border);
+            color: var(--accent-gold);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
-            z-index: 100;
-            padding: 0;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.25s;
         }
 
         .theme-toggle:hover {
-            transform: scale(1.08) rotate(10deg);
-            border-color: var(--accent-brass);
+            transform: scale(1.08) rotate(12deg);
+            border-color: var(--accent-gold);
         }
 
         .theme-toggle svg {
@@ -114,197 +181,321 @@
             stroke-linejoin: round;
         }
 
-        /* Tarjeta Principal Estilo Madera & Estudio Vintage */
-        .card {
-            background: var(--wood-card);
-            padding: 2.4rem 2.2rem;
-            border-radius: 18px;
-            border: 1.5px solid var(--wood-border);
-            border-top: 5px solid var(--wood-Trim);
-            box-shadow: var(--shadow-card);
+        /* --- CONTENEDOR PRINCIPAL A PANTALLA COMPLETA --- */
+        .studio-workspace {
+            flex: 1;
             width: 100%;
-            max-width: 530px;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem 2.5rem;
+            display: grid;
+            grid-template-columns: 1.05fr 1.25fr;
+            gap: 2.2rem;
+            align-items: stretch;
+        }
+
+        .console-deck {
+            background: var(--wood-console);
+            backdrop-filter: blur(14px);
+            border: 2px solid var(--wood-border);
+            border-top: 6px solid var(--wood-trim);
+            border-radius: 16px;
+            padding: 2rem 2.2rem;
+            box-shadow: var(--panel-shadow);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             position: relative;
-            overflow: hidden;
         }
 
-        .studio-tag {
-            text-align: center;
-            font-size: 0.72rem;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            color: var(--accent-brass);
-            font-weight: 700;
-            margin-bottom: 0.35rem;
+        /* Tornillos decorativos de rack analógico */
+        .console-deck::before,
+        .console-deck::after {
+            content: "⊕";
+            position: absolute;
+            top: 12px;
+            font-size: 0.9rem;
+            color: var(--wood-border);
+            font-family: monospace;
+        }
+        .console-deck::before { left: 14px; }
+        .console-deck::after { right: 14px; }
+
+        .deck-header {
+            border-bottom: 1px solid var(--wood-border);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
         }
 
-        h2 {
+        .deck-header h2 {
             font-family: 'Playfair Display', Georgia, serif;
-            font-size: 2rem;
-            margin: 0 0 0.4rem 0;
+            font-size: 1.65rem;
+            margin: 0;
             color: var(--text-main);
-            text-align: center;
-            letter-spacing: -0.01em;
         }
 
-        .subtitle {
-            text-align: center;
-            font-size: 0.88rem;
+        .deck-serial {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--accent-brass);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* --- DECK IZQUIERDO: ENTRADA Y TOCADISCOS --- */
+        .input-group label {
+            display: block;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
             color: var(--text-muted);
-            margin-bottom: 1.6rem;
+            margin-bottom: 0.6rem;
+            font-weight: 700;
         }
 
-        .input-wrapper {
-            position: relative;
-            margin-bottom: 1rem;
-        }
-
-        input {
+        .url-input {
             width: 100%;
-            padding: 0.9rem 1rem;
+            padding: 1.05rem 1.2rem;
             border-radius: 10px;
             border: 1.5px solid var(--wood-border);
-            background: var(--wood-panel);
+            background: var(--wood-inset);
             color: var(--text-main);
             font-family: inherit;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            margin-bottom: 1.1rem;
             outline: none;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.35);
         }
 
-        input::placeholder {
-            color: var(--text-muted);
-            opacity: 0.75;
+        .url-input:focus {
+            border-color: var(--accent-gold);
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.35), 0 0 0 3px rgba(223, 142, 60, 0.2);
         }
 
-        input:focus {
-            border-color: var(--accent-brass);
-            box-shadow: 0 0 0 3px rgba(184, 107, 40, 0.18);
-        }
-
-        .main-btn {
+        .convert-btn {
             width: 100%;
-            padding: 0.9rem;
-            background: linear-gradient(135deg, var(--accent-brass), var(--wood-Trim));
+            padding: 1.05rem;
+            background: linear-gradient(135deg, var(--accent-brass), var(--wood-trim));
             color: #fffaf4;
-            border: none;
+            border: 1px solid var(--accent-gold);
             border-radius: 10px;
             font-family: inherit;
             font-weight: 700;
-            font-size: 1rem;
-            letter-spacing: 0.02em;
+            font-size: 1.05rem;
+            letter-spacing: 0.03em;
             cursor: pointer;
-            box-shadow: 0 6px 16px rgba(140, 88, 58, 0.3);
-            transition: transform 0.18s ease, box-shadow 0.2s ease, opacity 0.2s;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+            transition: transform 0.15s ease, filter 0.2s;
         }
 
-        .main-btn:hover:not(:disabled) {
-            transform: translateY(-1px);
-            box-shadow: 0 8px 20px rgba(140, 88, 58, 0.4);
+        .convert-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            filter: brightness(1.08);
         }
 
-        .main-btn:active:not(:disabled) {
-            transform: translateY(0);
-        }
-
-        .main-btn:disabled {
+        .convert-btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
         }
 
-        /* Estado y Vinilo Animado */
-        .status-area {
+        /* Plato de Vinilo de Estudio */
+        .turntable-stage {
+            margin: 1.6rem 0;
+            background: var(--wood-inset);
+            border: 1.5px solid var(--wood-border);
+            border-radius: 14px;
+            padding: 1.4rem;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            margin-top: 1.1rem;
-            min-height: 24px;
+            gap: 1.6rem;
+            box-shadow: inset 0 4px 15px rgba(0,0,0,0.45);
         }
 
-        .vinyl-loader {
-            display: none;
-            width: 42px;
-            height: 42px;
+        .vinyl-platter {
+            width: 115px;
+            height: 115px;
+            flex-shrink: 0;
             border-radius: 50%;
-            background: radial-gradient(circle, var(--accent-gold) 0%, var(--accent-gold) 18%, #1a110d 20%, #2b1d16 45%, #140d09 48%, #2b1d16 70%, #120b07 100%);
-            border: 2px solid var(--wood-border);
-            margin-bottom: 0.6rem;
-            animation: spinVinyl 1.8s linear infinite;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            background: 
+                radial-gradient(circle, var(--accent-gold) 0%, var(--accent-brass) 16%, #120b07 18%, #261710 38%, #120b07 42%, #291a12 64%, #0d0805 100%);
+            border: 3px solid var(--wood-border);
+            box-shadow: 0 8px 22px rgba(0,0,0,0.6);
+            position: relative;
         }
 
-        @keyframes spinVinyl {
+        .vinyl-platter.spinning {
+            animation: spinRecord 2.2s linear infinite;
+        }
+
+        @keyframes spinRecord {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
 
+        .turntable-info {
+            flex: 1;
+        }
+
+        .turntable-info h4 {
+            margin: 0 0 0.35rem 0;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.1rem;
+            color: var(--accent-gold);
+        }
+
         #status {
-            text-align: center;
-            font-size: 0.9rem;
+            font-size: 0.92rem;
             color: var(--text-muted);
-            font-weight: 500;
+            line-height: 1.4;
         }
 
-        /* Tarjeta de Resultados */
-        .track-info {
-            margin-top: 1.3rem;
+        /* Panel inferior de notas de estudio */
+        .studio-notes {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.8rem;
+            border-top: 1px solid var(--wood-border);
+            padding-top: 1.2rem;
+        }
+
+        .note-card {
             background: var(--wood-panel);
-            padding: 1.35rem;
-            border-radius: 14px;
             border: 1px solid var(--wood-border);
-            animation: fadeIn 0.4s ease;
+            border-radius: 8px;
+            padding: 0.7rem;
+            text-align: center;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+        .note-card strong {
+            display: block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--accent-gold);
+            margin-bottom: 0.2rem;
+        }
+
+        .note-card span {
+            font-size: 0.74rem;
+            color: var(--text-muted);
+        }
+
+        /* --- DECK DERECHO: RACK DE ANÁLISIS, METRÓNOMO Y ARMONÍA --- */
+        .track-rack {
+            background: var(--wood-panel);
+            border: 1.5px solid var(--wood-border);
+            border-radius: 14px;
+            padding: 1.6rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .track-title {
             font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.4rem;
             font-weight: 700;
             color: var(--text-main);
-            margin-bottom: 0.35rem;
-            font-size: 1.12rem;
-            line-height: 1.35;
+            margin: 0 0 0.4rem 0;
+            line-height: 1.3;
         }
 
         .track-meta {
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.82rem;
             color: var(--text-muted);
-            margin-bottom: 1rem;
+            margin-bottom: 1.3rem;
         }
 
-        .badges {
-            display: flex;
-            gap: 0.65rem;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
+        /* INSIGNIAS INTERACTIVAS (BPM CON HOVER "REPRODUCIR" Y METRÓNOMO) */
+        .badges-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.4rem;
         }
 
-        .badge {
-            background: var(--badge-bg);
-            border: 1px solid var(--wood-border);
-            color: var(--text-main);
-            padding: 0.4rem 0.8rem;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-        }
-
-        .badge.key-badge {
-            border-color: var(--accent-brass);
-            color: var(--accent-brass);
-        }
-
-        /* PESTAÑA DESPLEGABLE (Acordeón de Escala y Acordes) */
-        .scale-dropdown-tab {
-            background: var(--wood-card);
+        .badge-card {
+            background: var(--wood-inset);
             border: 1.5px solid var(--wood-border);
-            border-radius: 10px;
-            margin-bottom: 1.1rem;
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .badge-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 0.25rem;
+            font-weight: 700;
+        }
+
+        .badge-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* Botón de BPM interactivo con Hover "Reproducir" */
+        .bpm-interactive {
+            cursor: pointer;
+            border-color: var(--accent-brass);
+            user-select: none;
+            transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s;
+        }
+
+        .bpm-interactive:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-gold);
+            box-shadow: 0 6px 18px rgba(223, 142, 60, 0.25);
+        }
+
+        .bpm-hover-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--accent-brass), var(--wood-trim));
+            color: #fffaf4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            font-size: 1.05rem;
+            letter-spacing: 0.04em;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .bpm-interactive:hover .bpm-hover-overlay {
+            opacity: 1;
+        }
+
+        .bpm-interactive.playing {
+            border-color: #4ade80;
+            box-shadow: 0 0 18px rgba(74, 222, 128, 0.3);
+        }
+
+        .bpm-interactive.beat-flash {
+            background: rgba(223, 142, 60, 0.28);
+        }
+
+        /* PESTAÑA DESPLEGABLE DE ESCALA Y ACORDES */
+        .scale-dropdown-tab {
+            background: var(--wood-inset);
+            border: 1.5px solid var(--wood-border);
+            border-radius: 12px;
+            margin-bottom: 1.4rem;
             overflow: hidden;
         }
 
@@ -312,32 +503,26 @@
             width: 100%;
             background: transparent;
             border: none;
-            padding: 0.85rem 1rem;
+            padding: 1.05rem 1.25rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
             color: var(--text-main);
             font-family: inherit;
-            font-size: 0.9rem;
+            font-size: 0.98rem;
             font-weight: 700;
             text-align: left;
         }
 
         .scale-tab-header:hover {
-            background: rgba(184, 107, 40, 0.08);
-        }
-
-        .scale-tab-title {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            background: rgba(223, 142, 60, 0.1);
         }
 
         .chevron-icon {
-            width: 18px;
-            height: 18px;
-            stroke: var(--accent-brass);
+            width: 20px;
+            height: 20px;
+            stroke: var(--accent-gold);
             transition: transform 0.3s ease;
         }
 
@@ -348,14 +533,13 @@
         .scale-tab-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.38s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease;
-            padding: 0 1rem;
-            border-top: 0px solid var(--wood-border);
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease;
+            padding: 0 1.25rem;
         }
 
         .scale-dropdown-tab.open .scale-tab-content {
-            max-height: 360px;
-            padding: 0.9rem 1rem 1rem 1rem;
+            max-height: 420px;
+            padding: 1.1rem 1.25rem 1.25rem 1.25rem;
             border-top: 1px solid var(--wood-border);
         }
 
@@ -363,13 +547,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.75rem;
-            gap: 0.5rem;
+            margin-bottom: 0.9rem;
             flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
         .chords-label {
-            font-size: 0.74rem;
+            font-size: 0.76rem;
             text-transform: uppercase;
             letter-spacing: 0.08em;
             color: var(--text-muted);
@@ -381,9 +565,9 @@
             color: var(--text-main);
             border: 1px solid var(--wood-border);
             border-radius: 6px;
-            padding: 0.28rem 0.55rem;
+            padding: 0.35rem 0.7rem;
             font-family: inherit;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
             outline: none;
@@ -391,18 +575,18 @@
 
         .chords-grid {
             display: flex;
-            gap: 0.45rem;
+            gap: 0.55rem;
             flex-wrap: wrap;
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.95rem;
         }
 
         .chord-pill {
             background: var(--wood-panel);
             border: 1px solid var(--wood-border);
             color: var(--text-main);
-            padding: 0.38rem 0.68rem;
-            border-radius: 6px;
-            font-size: 0.86rem;
+            padding: 0.5rem 0.85rem;
+            border-radius: 8px;
+            font-size: 0.92rem;
             font-weight: 700;
             font-family: 'JetBrains Mono', monospace;
             cursor: pointer;
@@ -412,91 +596,214 @@
 
         .chord-pill:hover {
             transform: translateY(-2px);
-            border-color: var(--accent-brass);
-        }
-
-        .chord-pill:active {
-            transform: scale(0.95);
+            border-color: var(--accent-gold);
         }
 
         .chord-pill.root {
             background: var(--root-pill-bg);
             color: var(--root-pill-text);
-            border-color: var(--accent-brass);
+            border-color: var(--accent-gold);
         }
 
         .progression-text {
-            font-size: 0.83rem;
+            font-size: 0.88rem;
             color: var(--text-muted);
             border-top: 1px dashed var(--wood-border);
-            padding-top: 0.6rem;
-            line-height: 1.45;
+            padding-top: 0.75rem;
+            line-height: 1.5;
         }
 
         .progression-text strong {
-            color: var(--accent-brass);
+            color: var(--accent-gold);
         }
 
         .hint-audio {
-            font-size: 0.73rem;
+            font-size: 0.76rem;
             color: var(--text-muted);
             font-style: italic;
-            margin-top: 0.35rem;
+            margin-top: 0.45rem;
         }
 
         .download-link {
             display: block;
-            padding: 0.85rem;
+            padding: 1.05rem;
             background: var(--download-bg);
             color: #ffffff;
             text-align: center;
             text-decoration: none;
             border-radius: 10px;
             font-weight: 700;
-            font-size: 0.95rem;
-            letter-spacing: 0.02em;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
-            transition: background 0.2s, transform 0.15s;
+            font-size: 1rem;
+            letter-spacing: 0.03em;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255,255,255,0.18);
         }
 
         .download-link:hover {
             background: var(--download-hover);
             transform: translateY(-1px);
         }
+
+        .download-link.disabled-link {
+            opacity: 0.45;
+            pointer-events: none;
+        }
+
+        @media (max-width: 1024px) {
+            .studio-workspace {
+                grid-template-columns: 1fr;
+                padding: 1.2rem;
+            }
+            .top-navbar {
+                padding: 0.8rem 1.2rem;
+            }
+            .vu-box {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Botón de Tema: Luna (activa Modo Oscuro) / Sol (desactiva Modo Oscuro) -->
-    <button id="themeToggle" class="theme-toggle" title="Cambiar modo oscuro / claro" aria-label="Cambiar tema">
-        <!-- Icono de Luna por defecto (para activar el modo oscuro) -->
-        <svg id="themeIcon" viewBox="0 0 24 24">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-        </svg>
-    </button>
-
-    <div class="card">
-        <div class="studio-tag">Acoustic &amp; Jazz Session Utility</div>
-        <h2>Velvet Wood Studio</h2>
-        <div class="subtitle">Conversor MP3, detector de tempo y armonía para guitarra</div>
-
-        <div class="input-wrapper">
-            <input type="text" id="urlInput" placeholder="Pega el enlace de YouTube aquí...">
-        </div>
-        <button id="downloadBtn" class="main-btn" type="button">Convertir y Analizar Pista</button>
-
-        <div class="status-area">
-            <div id="vinylLoader" class="vinyl-loader"></div>
-            <div id="status"></div>
+    <!-- BARRA SUPERIOR A PANTALLA COMPLETA -->
+    <header class="top-navbar">
+        <div class="brand-cluster">
+            <div class="brand-emblem">🎷</div>
+            <div class="brand-titles">
+                <span>Analog Mastering &amp; Harmony</span>
+                <h1>Velvet Wood Studio Console</h1>
+            </div>
         </div>
 
-        <div id="resultContainer"></div>
-    </div>
+        <div class="nav-telemetry">
+            <div class="vu-box">
+                <span class="status-dot"></span>
+                <span>CONSOLE ONLINE • 48kHz / 24-BIT</span>
+            </div>
+
+            <!-- Como inicia en Modo Oscuro, muestra el SOL para desactivarlo y pasar a claro -->
+            <button id="themeToggle" class="theme-toggle" title="Desactivar modo oscuro" aria-label="Cambiar tema">
+                <svg id="themeIcon" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- ESPACIO DE TRABAJO DE PANTALLA COMPLETA (2 CONSOLAS) -->
+    <main class="studio-workspace">
+
+        <!-- DECK A: ENTRADA, TRANSPORTE Y PLATO DE VINILO -->
+        <section class="console-deck">
+            <div>
+                <div class="deck-header">
+                    <h2>Deck A • Master Input</h2>
+                    <span class="deck-serial">CH-01 // TUBE PREAMP</span>
+                </div>
+
+                <div class="input-group">
+                    <label for="urlInput">Enlace de la pista (YouTube URL o ID)</label>
+                    <input type="text" id="urlInput" class="url-input" placeholder="https://www.youtube.com/watch?v=...">
+                    <button id="downloadBtn" class="convert-btn" type="button">
+                        Convertir a MP3 y Analizar Armonía
+                    </button>
+                </div>
+
+                <div class="turntable-stage">
+                    <div id="vinylPlatter" class="vinyl-platter"></div>
+                    <div class="turntable-info">
+                        <h4>Monitor de Estado</h4>
+                        <div id="status">Consola lista. Introduce un enlace o prueba el metrónomo y las escalas en el Deck B.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="studio-notes">
+                <div class="note-card">
+                    <strong>METRÓNOMO</strong>
+                    <span>Pasa el ratón sobre los BPM y clica para escuchar</span>
+                </div>
+                <div class="note-card">
+                    <strong>ARMONÍA</strong>
+                    <span>Despliega la pestaña de escala y toca cada acorde</span>
+                </div>
+                <div class="note-card">
+                    <strong> SALIDA</strong>
+                    <span>Extracción directa en MP3 de alta fidelidad</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- DECK B: RACK DE ANÁLISIS, METRÓNOMO Y PESTAÑA DESPLEGABLE DE ESCALA -->
+        <section class="console-deck">
+            <div class="deck-header">
+                <h2>Deck B • Tempo &amp; Jazz Harmony Rack</h2>
+                <span class="deck-serial">CH-02 // DSP &amp; CHORDS</span>
+            </div>
+
+            <div class="track-rack" id="resultContainer">
+                <div>
+                    <div class="track-title" id="trackTitle">Sesión de Estudio Activa (Modo Práctica)</div>
+                    <div class="track-meta" id="trackMeta">Carga un enlace en el Deck A para extraer el MP3 • Interactúa con el tempo y la escala debajo</div>
+
+                    <!-- FILA DE INSIGNIAS: BPM CON METRÓNOMO AL HOVER/CLIC Y TONO -->
+                    <div class="badges-row">
+                        <div class="badge-card bpm-interactive" id="bpmBadgeCard" title="Haz clic para reproducir o detener el metrónomo">
+                            <div>
+                                <span class="badge-label">Tempo Detectado (Metrónomo)</span>
+                                <span class="badge-value">🥁 <span id="bpmValue">110</span> BPM</span>
+                            </div>
+                            <div class="bpm-hover-overlay" id="bpmHoverText">▶ Reproducir</div>
+                        </div>
+
+                        <div class="badge-card">
+                            <div>
+                                <span class="badge-label">Tonalidad Principal</span>
+                                <span class="badge-value">🎷 <span id="keyValue">A menor (Am)</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PESTAÑA DESPLEGABLE DE ESCALA -->
+                    <div class="scale-dropdown-tab" id="scaleTab">
+                        <button type="button" class="scale-tab-header" id="scaleTabBtn">
+                            <span>🎸 Pestaña Desplegable de Escala y Acordes (<span id="activeKeyLabel">Am</span>)</span>
+                            <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                        <div class="scale-tab-content">
+                            <div class="scale-selector-row">
+                                <span class="chords-label">Acordes Diatónicos de la Escala</span>
+                                <select id="scaleSelect" class="scale-select" title="Cambiar o transponer escala"></select>
+                            </div>
+                            <div id="chordsGrid" class="chords-grid"></div>
+                            <div id="progressionText" class="progression-text"></div>
+                            <div class="hint-audio">✨ Haz clic en cualquier acorde para escuchar su sonoridad en vivo</div>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="#" id="masterDownloadLink" class="download-link disabled-link" target="_blank" rel="noopener noreferrer">
+                    Convierte una pista en el Deck A para habilitar la descarga MP3
+                </a>
+            </div>
+        </section>
+
+    </main>
 
     <script>
         const API_URL = "https://yttomp3-hhdd.onrender.com";
 
-        // --- 1. LÓGICA DE MODO OSCURO (LUNA -> SOL) ---
+        // --- 1. MODO OSCURO PREDETERMINADO (SOL PARA DESACTIVAR / LUNA PARA ACTIVAR) ---
         const themeToggleBtn = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
         const htmlEl = document.documentElement;
@@ -545,8 +852,92 @@
             "B":   { chords: ["B", "C#m", "D#m", "E", "F#", "G#m", "A#dim"], prog: "B - F# - G#m - E  (Cejilla traste 2 tocando como A)" }
         };
 
-        // --- 3. SINTETIZADOR CÁLIDO DE ACORDES (Web Audio API) ---
+        // --- 3. MOTOR DE AUDIO WEB (METRÓNOMO WOODBLOCK + SINTETIZADOR DE ACORDES) ---
         let audioCtx = null;
+        let currentBpm = 110;
+        let isMetronomePlaying = false;
+        let metronomeInterval = null;
+        let beatCount = 0;
+
+        function ensureAudioCtx() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playWoodblockTick(isDownbeat) {
+            ensureAudioCtx();
+            const now = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            // Frecuencia cálida tipo claqueta de madera (Woodblock)
+            osc.type = "triangle";
+            const baseFreq = isDownbeat ? 1050 : 760;
+            osc.frequency.setValueAtTime(baseFreq, now);
+            osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.45, now + 0.065);
+
+            gain.gain.setValueAtTime(0.001, now);
+            gain.gain.linearRampToValueAtTime(isDownbeat ? 0.35 : 0.22, now + 0.005);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(now);
+            osc.stop(now + 0.075);
+
+            // Pulso visual en la tarjeta de BPM
+            const bpmCard = document.getElementById('bpmBadgeCard');
+            bpmCard.classList.add('beat-flash');
+            setTimeout(() => bpmCard.classList.remove('beat-flash'), 90);
+        }
+
+        function toggleMetronome() {
+            const bpmCard = document.getElementById('bpmBadgeCard');
+            const hoverText = document.getElementById('bpmHoverText');
+            const vinyl = document.getElementById('vinylPlatter');
+
+            if (isMetronomePlaying) {
+                clearInterval(metronomeInterval);
+                isMetronomePlaying = false;
+                bpmCard.classList.remove('playing');
+                hoverText.textContent = "▶ Reproducir";
+                vinyl.classList.remove('spinning');
+            } else {
+                isMetronomePlaying = true;
+                beatCount = 0;
+                bpmCard.classList.add('playing');
+                hoverText.textContent = "⏹ Detener";
+                vinyl.classList.add('spinning');
+
+                const intervalMs = (60 / currentBpm) * 1000;
+                playWoodblockTick(true);
+                beatCount = 1;
+
+                metronomeInterval = setInterval(() => {
+                    playWoodblockTick(beatCount % 4 === 0);
+                    beatCount++;
+                }, intervalMs);
+            }
+        }
+
+        function updateMetronomeTempo(newBpm) {
+            currentBpm = Number(newBpm) || 110;
+            document.getElementById('bpmValue').textContent = currentBpm;
+            if (isMetronomePlaying) {
+                clearInterval(metronomeInterval);
+                const intervalMs = (60 / currentBpm) * 1000;
+                metronomeInterval = setInterval(() => {
+                    playWoodblockTick(beatCount % 4 === 0);
+                    beatCount++;
+                }, intervalMs);
+            }
+        }
+
+        // Sintetizador cálido para los acordes de la escala
         const NOTE_FREQS = {
             "C": 261.63, "C#": 277.18, "Db": 277.18, "D": 293.66, "D#": 311.13, "Eb": 311.13,
             "E": 329.63, "F": 349.23, "F#": 369.99, "Gb": 369.99, "G": 392.00, "G#": 415.30,
@@ -555,13 +946,12 @@
 
         function playWarmChord(chordName) {
             try {
-                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                ensureAudioCtx();
                 const match = chordName.match(/^([A-G][#b]?)(.*)$/);
                 if (!match) return;
                 const rootFreq = NOTE_FREQS[match[1]] || 261.63;
                 const quality = match[2];
 
-                // Intervalos en semitonos (con séptima suave estilo jazz)
                 let intervals = [0, 4, 7, 11];
                 if (quality.includes("dim")) intervals = [0, 3, 6, 9];
                 else if (quality.includes("m")) intervals = [0, 3, 7, 10];
@@ -574,13 +964,13 @@
                     osc.frequency.setValueAtTime(rootFreq * Math.pow(2, semi / 12), now);
 
                     gain.gain.setValueAtTime(0.001, now);
-                    gain.gain.exponentialRampToValueAtTime(0.11 / (i + 1), now + 0.04 + i * 0.025);
-                    gain.gain.exponentialRampToValueAtTime(0.0008, now + 1.4);
+                    gain.gain.exponentialRampToValueAtTime(0.12 / (i + 1), now + 0.04 + i * 0.025);
+                    gain.gain.exponentialRampToValueAtTime(0.0008, now + 1.45);
 
                     osc.connect(gain);
                     gain.connect(audioCtx.destination);
                     osc.start(now + i * 0.025);
-                    osc.stop(now + 1.45);
+                    osc.stop(now + 1.5);
                 });
             } catch (e) {}
         }
@@ -600,13 +990,13 @@
             const gridEl = document.getElementById('chordsGrid');
             const progEl = document.getElementById('progressionText');
             const headerKeyEl = document.getElementById('activeKeyLabel');
-
-            if (!gridEl || !progEl) return;
+            const selectEl = document.getElementById('scaleSelect');
 
             if (headerKeyEl) headerKeyEl.textContent = keyCode;
+            if (selectEl && selectEl.value !== keyCode) selectEl.value = keyCode;
 
             gridEl.innerHTML = harmonyData.chords.map((chord, idx) => 
-                `<span class="chord-pill ${idx === 0 ? 'root' : ''}" data-chord="${chord}" title="Haz clic para escuchar el acorde ${chord}">${chord}</span>`
+                `<span class="chord-pill ${idx === 0 ? 'root' : ''}" data-chord="${chord}" title="Escuchar acorde ${chord}">${chord}</span>`
             ).join("");
 
             progEl.innerHTML = `<strong>Voicing &amp; Progresión:</strong> ${harmonyData.prog}`;
@@ -616,26 +1006,44 @@
             });
         }
 
-        // --- 4. CONVERSIÓN Y RENDERIZADO ---
+        // Inicialización del desplegable de escalas al cargar la página
+        function initHarmonyRack() {
+            const selectEl = document.getElementById('scaleSelect');
+            selectEl.innerHTML = Object.keys(HARMONY_MAP).map(k => 
+                `<option value="${k}" ${k === 'Am' ? 'selected' : ''}>Escala ${k}</option>`
+            ).join("");
+
+            renderScaleDetails("Am");
+
+            document.getElementById('scaleTabBtn').addEventListener('click', () => {
+                document.getElementById('scaleTab').classList.toggle('open');
+            });
+
+            selectEl.addEventListener('change', (e) => {
+                renderScaleDetails(e.target.value);
+            });
+
+            document.getElementById('bpmBadgeCard').addEventListener('click', toggleMetronome);
+        }
+
+        // --- 4. CONVERSIÓN CON EL BACKEND EN RENDER ---
         async function startConversion() {
             const urlInput = document.getElementById('urlInput').value.trim();
             const btn = document.getElementById('downloadBtn');
             const status = document.getElementById('status');
-            const vinylLoader = document.getElementById('vinylLoader');
-            const resultContainer = document.getElementById('resultContainer');
-
-            resultContainer.innerHTML = "";
+            const vinyl = document.getElementById('vinylPlatter');
+            const downloadLink = document.getElementById('masterDownloadLink');
 
             if (!urlInput) {
-                status.textContent = "Introduce un enlace de YouTube válido para comenzar.";
-                status.style.color = "#d9534f";
+                status.textContent = "Por favor, pega un enlace de YouTube válido en el Deck A.";
+                status.style.color = "#f87171";
                 return;
             }
 
             btn.disabled = true;
-            vinylLoader.style.display = "block";
-            status.textContent = "Afinando frecuencias y conectando con el estudio...";
-            status.style.color = "var(--accent-brass)";
+            vinyl.classList.add('spinning');
+            status.textContent = "Precalentando válvulas y extrayendo master desde el servidor...";
+            status.style.color = "var(--accent-gold)";
 
             try {
                 let data = null;
@@ -652,11 +1060,11 @@
                     data = await response.json();
 
                     if (!response.ok) {
-                        throw new Error(data.detail || "Error al conectar con el servidor.");
+                        throw new Error(data.detail || "Error al conectar con el backend.");
                     }
 
                     if (data.status === "processing") {
-                        status.textContent = `Masterizando pista (${data.progress || 0}%)...`;
+                        status.textContent = `Masterizando audio en estudio (${data.progress || 0}%)...`;
                         await new Promise(r => setTimeout(r, 3000));
                     } else {
                         break;
@@ -664,90 +1072,45 @@
                 }
 
                 if (data && data.status === "ok" && data.link) {
-                    status.textContent = "¡Sesión lista para descargar y tocar!";
-                    status.style.color = "var(--download-bg)";
+                    status.textContent = "¡Master analizado! Pasa el ratón por los BPM para lanzar el metrónomo o despliega la escala.";
+                    status.style.color = "#4ade80";
 
                     const sizeMB = data.filesize ? (data.filesize / (1024 * 1024)).toFixed(2) + " MB" : "";
                     const durationMin = data.duration ? Math.floor(data.duration / 60) + ":" + String(Math.floor(data.duration % 60)).padStart(2, '0') + " min" : "";
+
+                    document.getElementById('trackTitle').textContent = data.title || "Audio Master MP3";
+                    document.getElementById('trackMeta').textContent = `${durationMin} ${sizeMB ? "• " + sizeMB : ""} • Master listo para descarga`;
 
                     const bpmVal = data.bpm || 120;
                     const keyVal = data.key || "A menor (Am)";
                     const keyCode = normalizeKeyCode(keyVal);
 
-                    const scaleOptions = Object.keys(HARMONY_MAP).map(k => 
-                        `<option value="${k}" ${k === keyCode ? 'selected' : ''}>Escala ${k}</option>`
-                    ).join("");
-
-                    resultContainer.innerHTML = `
-                        <div class="track-info">
-                            <div class="track-title">${data.title || "Audio MP3"}</div>
-                            <div class="track-meta">${durationMin} ${sizeMB ? "• " + sizeMB : ""}</div>
-
-                            <div class="badges">
-                                <span class="badge">🥁 ${bpmVal} BPM</span>
-                                <span class="badge key-badge">🎷 Tono: ${keyVal}</span>
-                            </div>
-
-                            <!-- Pestaña Desplegable de Escala -->
-                            <div class="scale-dropdown-tab" id="scaleTab">
-                                <button type="button" class="scale-tab-header" id="scaleTabBtn">
-                                    <span class="scale-tab-title">
-                                        🎸 Pestaña de Escala y Acordes (<span id="activeKeyLabel">${keyCode}</span>)
-                                    </span>
-                                    <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                        <polyline points="6 9 12 15 18 9"></polyline>
-                                    </svg>
-                                </button>
-                                <div class="scale-tab-content">
-                                    <div class="scale-selector-row">
-                                        <span class="chords-label">Grados Diatónicos</span>
-                                        <select id="scaleSelect" class="scale-select" title="Cambiar o transponer escala">
-                                            ${scaleOptions}
-                                        </select>
-                                    </div>
-                                    <div id="chordsGrid" class="chords-grid"></div>
-                                    <div id="progressionText" class="progression-text"></div>
-                                    <div class="hint-audio">✨ Toca cualquier acorde para escuchar su voicing de jazz</div>
-                                </div>
-                            </div>
-
-                            <a href="${data.link}" class="download-link" target="_blank" rel="noopener noreferrer">
-                                Descargar Master MP3
-                            </a>
-                        </div>
-                    `;
-
-                    // Inicializamos los acordes dentro de la pestaña desplegable
+                    updateMetronomeTempo(bpmVal);
+                    document.getElementById('keyValue').textContent = keyVal;
                     renderScaleDetails(keyCode);
 
-                    // Evento para abrir/cerrar la pestaña desplegable
-                    const scaleTab = document.getElementById('scaleTab');
-                    const scaleTabBtn = document.getElementById('scaleTabBtn');
-                    scaleTabBtn.addEventListener('click', () => {
-                        scaleTab.classList.toggle('open');
-                    });
-
-                    // Evento para cambiar de escala manualmente desde el desplegable interior
-                    const scaleSelect = document.getElementById('scaleSelect');
-                    scaleSelect.addEventListener('change', (e) => {
-                        renderScaleDetails(e.target.value);
-                    });
-
+                    // Habilitamos el botón de descarga
+                    downloadLink.href = data.link;
+                    downloadLink.textContent = `⬇ Descargar Master MP3 (${data.title || "Audio"})`;
+                    downloadLink.classList.remove('disabled-link');
                 } else {
                     throw new Error((data && data.msg) || "No se pudo obtener el enlace MP3.");
                 }
 
             } catch (err) {
                 status.textContent = err.name === 'AbortError' 
-                    ? "El servidor se está despertando. Vuelve a pulsar en 10 segundos." 
+                    ? "El servidor de Render se está despertando. Vuelve a pulsar en 10 segundos." 
                     : `Error: ${err.message}`;
-                status.style.color = "#d9534f";
+                status.style.color = "#f87171";
             } finally {
-                vinylLoader.style.display = "none";
+                if (!isMetronomePlaying) {
+                    vinyl.classList.remove('spinning');
+                }
                 btn.disabled = false;
             }
         }
 
+        initHarmonyRack();
         document.getElementById('downloadBtn').addEventListener('click', startConversion);
         document.getElementById('urlInput').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') startConversion();
