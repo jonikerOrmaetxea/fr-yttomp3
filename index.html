@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conversor Audio MP3</title>
+    <title>YouTube to MP3 Converter</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -65,11 +65,27 @@
             text-align: center;
             font-size: 0.9rem;
             color: #94a3b8;
-            word-break: break-word;
+        }
+        .track-info {
+            margin-top: 1.2rem;
+            background: #0f172a;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #334155;
+        }
+        .track-title {
+            font-weight: bold;
+            color: #f8fafc;
+            margin-bottom: 0.4rem;
+            font-size: 0.95rem;
+        }
+        .track-meta {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-bottom: 1rem;
         }
         .download-link {
             display: block;
-            margin-top: 1rem;
             padding: 0.75rem;
             background: #16a34a;
             color: white;
@@ -77,31 +93,21 @@
             text-decoration: none;
             border-radius: 6px;
             font-weight: bold;
+            transition: background 0.2s;
         }
         .download-link:hover {
             background: #15803d;
-        }
-        pre {
-            background: #0f172a;
-            padding: 0.75rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            overflow-x: auto;
-            color: #cbd5e1;
-            margin-top: 1rem;
-            display: none;
         }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <h2>Audio Converter</h2>
-        <input type="text" id="urlInput" placeholder="Pega el enlace aquí...">
+        <h2>YouTube to MP3</h2>
+        <input type="text" id="urlInput" placeholder="Pega el enlace de YouTube aquí...">
         <button id="downloadBtn" onclick="startConversion()">Convertir a MP3</button>
         <div id="status"></div>
         <div id="resultContainer"></div>
-        <pre id="debugOutput"></pre>
     </div>
 
     <script>
@@ -112,59 +118,57 @@
             const btn = document.getElementById('downloadBtn');
             const status = document.getElementById('status');
             const resultContainer = document.getElementById('resultContainer');
-            const debugOutput = document.getElementById('debugOutput');
 
             resultContainer.innerHTML = "";
-            debugOutput.style.display = "none";
 
             if (!urlInput) {
-                status.textContent = "Por favor, introduce una URL válida.";
+                status.textContent = "Por favor, introduce una URL de YouTube válida.";
                 status.style.color = "#f87171";
                 return;
             }
 
             btn.disabled = true;
-            status.textContent = "Consultando servidor... (Puede tardar unos 40s si Render estaba en reposo)";
+            status.textContent = "Procesando audio...";
             status.style.color = "#38bdf8";
 
             try {
-                const response = await fetch(`${API_URL}/convert/?id_or_url=${encodeURIComponent(urlInput)}`);
-                const data = await response.json();
+                let data = null;
 
-                if (!response.ok) {
-                    throw new Error(data.detail || "Error al procesar la solicitud en el servidor.");
+                // Si la canción se está convirtiendo ("processing"), consulta cada 3 segundos
+                for (let intento = 0; intento < 6; intento++) {
+                    const response = await fetch(`${API_URL}/convert/?id_or_url=${encodeURIComponent(urlInput)}`);
+                    data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.detail || "Error al conectar con el backend.");
+                    }
+
+                    if (data.status === "processing") {
+                        status.textContent = `Convirtiendo (${data.progress || 0}%)...`;
+                        await new Promise(r => setTimeout(r, 3000));
+                    } else {
+                        break;
+                    }
                 }
 
-                // Buscamos los nombres de campo más habituales en las APIs de RapidAPI
-                const mp3Url = data.downloadUrl || data.link || data.url || data.download_url;
+                if (data && data.status === "ok" && data.link) {
+                    status.textContent = "¡Conversión completada!";
+                    status.style.color = "#4ade80";
 
-                if (mp3Url) {
-                    status.style.color = "#facc15";
-                    let timeLeft = 20;
+                    const sizeMB = data.filesize ? (data.filesize / (1024 * 1024)).toFixed(2) + " MB" : "";
+                    const durationMin = data.duration ? Math.floor(data.duration / 60) + ":" + String(Math.floor(data.duration % 60)).padStart(2, '0') + " min" : "";
 
-                    const countdownInterval = setInterval(() => {
-                        timeLeft--;
-                        status.textContent = `Procesando audio en el servidor externo... Listo en ${timeLeft}s`;
-
-                        if (timeLeft <= 0) {
-                            clearInterval(countdownInterval);
-                            status.textContent = "¡Conversión lista!";
-                            status.style.color = "#4ade80";
-
-                            const linkElement = document.createElement('a');
-                            linkElement.href = mp3Url;
-                            linkElement.className = "download-link";
-                            linkElement.target = "_blank";
-                            linkElement.rel = "noopener noreferrer";
-                            linkElement.textContent = "Descargar MP3";
-                            resultContainer.appendChild(linkElement);
-                        }
-                    }, 1000);
+                    resultContainer.innerHTML = `
+                        <div class="track-info">
+                            <div class="track-title">${data.title || "Audio MP3"}</div>
+                            <div class="track-meta">${durationMin} ${sizeMB ? "• " + sizeMB : ""}</div>
+                            <a href="${data.link}" class="download-link" target="_blank" rel="noopener noreferrer">
+                                Descargar MP3
+                            </a>
+                        </div>
+                    `;
                 } else {
-                    status.textContent = "Respuesta recibida (revisa el JSON):";
-                    status.style.color = "#facc15";
-                    debugOutput.textContent = JSON.stringify(data, null, 2);
-                    debugOutput.style.display = "block";
+                    throw new Error(data.msg || "No se pudo obtener el enlace MP3.");
                 }
 
             } catch (err) {
