@@ -137,19 +137,31 @@
 
                 // Buscamos los nombres de campo más habituales en las APIs de RapidAPI
                 const mp3Url = data.downloadUrl || data.link || data.url || data.download_url;
-                if (mp3Url) {
-                    status.textContent = "¡Conversión lista!";
-                    status.style.color = "#4ade80";
 
-                    const linkElement = document.createElement('a');
-                    linkElement.href = mp3Url;
-                    linkElement.className = "download-link";
-                    linkElement.target = "_blank";
-                    linkElement.rel = "noopener noreferrer";
-                    linkElement.textContent = "Descargar MP3 (" + (data.title || "Audio") + ")";
-                    resultContainer.appendChild(linkElement);
+                if (mp3Url) {
+                    status.style.color = "#facc15";
+                    let timeLeft = 20;
+
+                    const countdownInterval = setInterval(() => {
+                        timeLeft--;
+                        status.textContent = `Procesando audio en el servidor externo... Listo en ${timeLeft}s`;
+
+                        if (timeLeft <= 0) {
+                            clearInterval(countdownInterval);
+                            status.textContent = "¡Conversión lista!";
+                            status.style.color = "#4ade80";
+
+                            const linkElement = document.createElement('a');
+                            linkElement.href = mp3Url;
+                            linkElement.className = "download-link";
+                            linkElement.target = "_blank";
+                            linkElement.rel = "noopener noreferrer";
+                            linkElement.textContent = "Descargar MP3";
+                            resultContainer.appendChild(linkElement);
+                        }
+                    }, 1000);
                 } else {
-                    status.textContent = "Respuesta recibida (revisa la estructura JSON debajo):";
+                    status.textContent = "Respuesta recibida (revisa el JSON):";
                     status.style.color = "#facc15";
                     debugOutput.textContent = JSON.stringify(data, null, 2);
                     debugOutput.style.display = "block";
