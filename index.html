@@ -136,8 +136,7 @@
                 }
 
                 // Buscamos los nombres de campo más habituales en las APIs de RapidAPI
-                const mp3Url = data.link || data.url || data.download_url || data.dlink || (data.result && data.result.download_url);
-
+                const mp3Url = data.downloadUrl || data.link || data.url || data.download_url;
                 if (mp3Url) {
                     status.textContent = "¡Conversión lista!";
                     status.style.color = "#4ade80";
