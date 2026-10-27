@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Robos por YT</title>
+    <title>Velvet Wood • MP3 Converter & Jazz Studio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=JetBrains+Mono:wght@500;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
@@ -570,8 +570,8 @@
         <div class="brand-cluster">
             <div class="brand-emblem">🎷</div>
             <div class="brand-titles">
-                <span>Palabrita que no te meto un troyano</span>
-                <h1>YouTube to MP3</h1>
+                <span>Analog Mastering &amp; Harmony</span>
+                <h1>Velvet Wood Studio</h1>
             </div>
         </div>
 
@@ -597,7 +597,7 @@
         <!-- PROTAGONISTA ABSOLUTO: EL CONVERTIDOR -->
         <section class="hero-converter-deck">
             <h2 class="hero-title">Convertidor Master YouTube a MP3</h2>
-            <p class="hero-subtitle">Pega el enlace y roba el beat tranquilo</p>
+            <p class="hero-subtitle">Pega el enlace del vídeo para extraer el audio en alta calidad, detectar los BPM y obtener su escala armónica</p>
 
             <div class="converter-bar">
                 <input type="text" id="urlInput" class="url-input" placeholder="Pega el enlace de YouTube aquí (ej. https://www.youtube.com/watch?v=...)">
@@ -845,4 +845,187 @@
             hammerFilter.connect(masterGain);
             masterGain.connect(audioCtx.destination);
 
-            // Serie de armónicos naturales del piano con
+            // Serie de armónicos naturales del piano con ligera inarmonicidad
+            const harmonics = [
+                { mult: 1,    amp: 1.00, decay: 2.3 },
+                { mult: 2,    amp: 0.45, decay: 1.7 },
+                { mult: 3,    amp: 0.20, decay: 1.2 },
+                { mult: 4.01, amp: 0.09, decay: 0.8 }
+            ];
+
+            harmonics.forEach(h => {
+                const osc = audioCtx.createOscillator();
+                const partialGain = audioCtx.createGain();
+
+                osc.type = "sine";
+                osc.frequency.setValueAtTime(freq * h.mult, startTime);
+
+                partialGain.gain.setValueAtTime(h.amp, startTime);
+                partialGain.gain.exponentialRampToValueAtTime(0.001, startTime + h.decay);
+
+                osc.connect(partialGain);
+                partialGain.connect(hammerFilter);
+
+                osc.start(startTime);
+                osc.stop(startTime + 2.45);
+            });
+        }
+
+        function playAcousticPianoChord(chordName) {
+            try {
+                ensureAudioCtx();
+                const match = chordName.match(/^([A-G][#b]?)(.*)$/);
+                if (!match) return;
+                const rootFreq = NOTE_FREQS[match[1]] || 261.63;
+                const quality = match[2];
+
+                // Bajo en octava grave (mano izquierda) + acorde en registro medio (mano derecha)
+                let intervals = [-12, 0, 4, 7, 12];
+                if (quality.includes("dim")) intervals = [-12, 0, 3, 6, 12];
+                else if (quality.includes("m")) intervals = [-12, 0, 3, 7, 12];
+
+                const now = audioCtx.currentTime;
+                intervals.forEach((semi, i) => {
+                    const noteFreq = rootFreq * Math.pow(2, semi / 12);
+                    // Ligero humanizado de 12 ms entre dedos como un pianista real
+                    playPianoNote(noteFreq, now + i * 0.012, i === 0 ? 0.22 : 0.16);
+                });
+            } catch (e) {}
+        }
+
+        function normalizeKeyCode(rawKey) {
+            if (!rawKey) return "Am";
+            const parenMatch = rawKey.match(/\(([^)]+)\)/);
+            if (parenMatch) return parenMatch[1];
+            const parts = rawKey.trim().split(/\s+/);
+            const note = parts[0];
+            const isMinor = rawKey.toLowerCase().includes("menor") || rawKey.toLowerCase().includes("min");
+            return isMinor && !note.endsWith("m") ? `${note}m` : note;
+        }
+
+        function renderScaleDetails(keyCode) {
+            const harmonyData = HARMONY_MAP[keyCode] || HARMONY_MAP["Am"];
+            const gridEl = document.getElementById('chordsGrid');
+            const progEl = document.getElementById('progressionText');
+            const headerKeyEl = document.getElementById('activeKeyLabel');
+            const selectEl = document.getElementById('scaleSelect');
+
+            if (headerKeyEl) headerKeyEl.textContent = keyCode;
+            if (selectEl && selectEl.value !== keyCode) selectEl.value = keyCode;
+
+            gridEl.innerHTML = harmonyData.chords.map((chord, idx) => 
+                `<span class="chord-pill ${idx === 0 ? 'root' : ''}" data-chord="${chord}" title="Escuchar acorde ${chord} en piano">${chord}</span>`
+            ).join("");
+
+            progEl.innerHTML = `<strong>Voicing &amp; Progresión:</strong> ${harmonyData.prog}`;
+
+            gridEl.querySelectorAll('.chord-pill').forEach(pill => {
+                pill.addEventListener('click', () => playAcousticPianoChord(pill.getAttribute('data-chord')));
+            });
+        }
+
+        function initHarmonyRack() {
+            const selectEl = document.getElementById('scaleSelect');
+            selectEl.innerHTML = Object.keys(HARMONY_MAP).map(k => 
+                `<option value="${k}" ${k === 'Am' ? 'selected' : ''}>Escala ${k}</option>`
+            ).join("");
+
+            renderScaleDetails("Am");
+
+            document.getElementById('scaleTabBtn').addEventListener('click', () => {
+                document.getElementById('scaleTab').classList.toggle('open');
+            });
+
+            selectEl.addEventListener('change', (e) => {
+                renderScaleDetails(e.target.value);
+            });
+
+            document.getElementById('bpmBadgeCard').addEventListener('click', toggleMetronome);
+        }
+
+        // --- 4. CONVERSIÓN CON EL BACKEND EN RENDER ---
+        async function startConversion() {
+            const urlInput = document.getElementById('urlInput').value.trim();
+            const btn = document.getElementById('downloadBtn');
+            const status = document.getElementById('status');
+            const downloadLink = document.getElementById('masterDownloadLink');
+
+            if (!urlInput) {
+                status.textContent = "Por favor, pega un enlace de YouTube válido arriba.";
+                status.style.color = "#f87171";
+                return;
+            }
+
+            btn.disabled = true;
+            status.textContent = "Convirtiendo audio y analizando BPM / Escala...";
+            status.style.color = "var(--accent-gold)";
+
+            try {
+                let data = null;
+
+                for (let intento = 0; intento < 6; intento++) {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 25000);
+
+                    const response = await fetch(`${API_URL}/convert/?id_or_url=${encodeURIComponent(urlInput)}`, {
+                        signal: controller.signal
+                    });
+                    clearTimeout(timeoutId);
+
+                    data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.detail || "Error al conectar con el backend.");
+                    }
+
+                    if (data.status === "processing") {
+                        status.textContent = `Procesando pista (${data.progress || 0}%)...`;
+                        await new Promise(r => setTimeout(r, 3000));
+                    } else {
+                        break;
+                    }
+                }
+
+                if (data && data.status === "ok" && data.link) {
+                    status.textContent = "¡Conversión completada! Descarga tu MP3 o despliega la escala debajo.";
+                    status.style.color = "#4ade80";
+
+                    const sizeMB = data.filesize ? (data.filesize / (1024 * 1024)).toFixed(2) + " MB" : "";
+                    const durationMin = data.duration ? Math.floor(data.duration / 60) + ":" + String(Math.floor(data.duration % 60)).padStart(2, '0') + " min" : "";
+
+                    document.getElementById('trackTitle').textContent = data.title || "Audio Master MP3";
+                    document.getElementById('trackMeta').textContent = `${durationMin} ${sizeMB ? "• " + sizeMB : ""} • Listo para descargar`;
+
+                    const bpmVal = data.bpm || 120;
+                    const keyVal = data.key || "A menor (Am)";
+                    const keyCode = normalizeKeyCode(keyVal);
+
+                    updateMetronomeTempo(bpmVal);
+                    document.getElementById('keyValue').textContent = keyVal;
+                    renderScaleDetails(keyCode);
+
+                    downloadLink.href = data.link;
+                    downloadLink.textContent = `⬇ Descargar MP3`;
+                    downloadLink.classList.remove('disabled-link');
+                } else {
+                    throw new Error((data && data.msg) || "No se pudo obtener el enlace MP3.");
+                }
+
+            } catch (err) {
+                status.textContent = err.name === 'AbortError' 
+                    ? "El servidor de Render se está despertando. Vuelve a pulsar en 10 segundos." 
+                    : `Error: ${err.message}`;
+                status.style.color = "#f87171";
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        initHarmonyRack();
+        document.getElementById('downloadBtn').addEventListener('click', startConversion);
+        document.getElementById('urlInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') startConversion();
+        });
+    </script>
+</body>
+</html>
